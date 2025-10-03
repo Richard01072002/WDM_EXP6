@@ -1,5 +1,5 @@
 ### EX6 Information Retrieval Using Vector Space Model in Python
-### DATE: 
+### DATE: 25.09.2025
 ### AIM: To implement Information Retrieval Using Vector Space Model in Python.
 ### Description: 
 <div align = "justify">
@@ -45,14 +45,33 @@ sklearn to demonstrate Information Retrieval using the Vector Space Model.
 ###### Preprocess documents and store them in a dictionary
     preprocessed_docs = {doc_id: preprocess_text(doc) for doc_id, doc in documents.items()}
 
-###### Construct TF-IDF matrix
+###### Construct TF
+    count_vectorizer = CountVectorizer()
+    tf_matrix = count_vectorizer.fit_transform(preprocessed_docs.values())
+    tf_df = pd.DataFrame(tf_matrix.toarray(), index=preprocessed_docs.keys(), columns=count_vectorizer.get_feature_names_out())
+    print("=== Term Frequency (TF) ===")
+    print(tf_df)
+
+###### Display TF-IDF
     tfidf_vectorizer = TfidfVectorizer()
     tfidf_matrix = tfidf_vectorizer.fit_transform(preprocessed_docs.values())
-
+    tfidf_df = pd.DataFrame(tfidf_matrix.toarray(), index=preprocessed_docs.keys(), columns=tfidf_vectorizer.get_feature_names_out())
+    print("\n=== TF-IDF ===")
+    print(tfidf_df.round(4))
+    
 ###### Calculate cosine similarity between query and documents
     def search(query, tfidf_matrix, tfidf_vectorizer):
-        //TYPE YOUR CODE HERE
+    preprocessed_query = preprocess_text(query)
+    query_vec = tfidf_vectorizer.transform([preprocessed_query])
+    cosine_sim = cosine_similarity(query_vec, tfidf_matrix).flatten()
 
+    results = []
+    doc_ids = list(preprocessed_docs.keys())
+    for i, score in enumerate(cosine_sim):
+        results.append((doc_ids[i], documents[doc_ids[i]], score))
+    results.sort(key=lambda x: x[2], reverse=True)
+    return results
+    
 ###### Get input from user
     query = input("Enter your query: ")
 
@@ -73,5 +92,7 @@ sklearn to demonstrate Information Retrieval using the Vector Space Model.
     print("The highest rank cosine score is:", highest_rank_score)
 
 ### Output:
+<img width="570" height="736" alt="image" src="https://github.com/user-attachments/assets/c2bc8b65-874f-48e7-a74f-ff30b074c772" />
 
 ### Result:
+Thus the python program to find Information Retrieval Using Vector Space Model is executed successfully.
